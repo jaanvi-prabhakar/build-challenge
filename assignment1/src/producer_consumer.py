@@ -66,6 +66,14 @@ def run_demo(source_data: List[str]) -> List[str]:
     Creates queue, producer and consumer threads.
     Returns the destination list containing all consumed items
     """
+
+    # check input
+    if not isinstance(source_data, list):
+        raise TypeError("source_data must be a list of strings.")
+    
+    if any(item is None for item in source_data):
+        raise ValueError("source_data cannot contain None values.")
+
     # create queue, poison pill, destination
     q = Queue()
     destination = []
