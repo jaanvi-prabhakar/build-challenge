@@ -1,9 +1,8 @@
-from concurrent.futures import thread
-from ctypes import pointer
-import time
 import threading
+import time
 from queue import Queue
-from typing import List, Any
+from typing import List
+
 
 class Producer(threading.Thread):
     """
@@ -11,6 +10,7 @@ class Producer(threading.Thread):
     Reads items from a source list and puts them into a shared Queue.
     After finishing, it inserts a poison pill to signal the consumer to stop .
     """
+
     def __init__(self, queue: Queue, source: List[str], poison_pill):
         super().__init__()
         self.queue = queue
@@ -25,7 +25,7 @@ class Producer(threading.Thread):
             self.queue.put(item)
             # small delay to simulate realistic concurrency
             time.sleep(0.01)
-        
+
         # send poison pill - signal the consumer that production
         self.queue.put(self.poison_pill)
 
@@ -36,6 +36,7 @@ class Consumer(threading.Thread):
     Reads items from a shared Queue and appends them to a destination list.
     Stops when it encounters the poison pill.
     """
+
     def __init__(self, queue: Queue, destination: List[str], poison_pill):
         super().__init__()
         self.queue = queue
@@ -46,10 +47,10 @@ class Consumer(threading.Thread):
         while True:
             # take from queue
             item = self.queue.get()
-        
+
             # break on poison pill
             if item is self.poison_pill:
-                #Stop consuming
+                # Stop consuming
                 break
 
             print(f"Consumed: {item}")
@@ -59,6 +60,7 @@ class Consumer(threading.Thread):
 
         # queue signalling
         self.queue.task_done()
+
 
 def run_demo(source_data: List[str]) -> List[str]:
     """
@@ -70,7 +72,7 @@ def run_demo(source_data: List[str]) -> List[str]:
     # check input
     if not isinstance(source_data, list):
         raise TypeError("source_data must be a list of strings.")
-    
+
     if any(item is None for item in source_data):
         raise ValueError("source_data cannot contain None values.")
 

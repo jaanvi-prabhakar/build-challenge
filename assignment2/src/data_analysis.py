@@ -1,17 +1,19 @@
 import csv
-from functools import reduce
-from typing import List, Dict, Any
 from collections import defaultdict
+from functools import reduce
+from typing import Any, Dict, List
 
-def load_csv(path:str) -> List[Dict]:
+
+def load_csv(path: str) -> List[Dict]:
     """
     Loads the Superstore CSV and returns a list of row dictionaries.
     Assumes headers match standard Superstore column names.
     """
-    with open(path, newline="", encoding="utf-8-sig") as f:
+    with open(path, newline="", encoding="latin-1") as f:
         reader = csv.DictReader(f)
         data = list(reader)
     return data
+
 
 def total_sales(data: List[Dict[str, Any]]) -> float:
     """
@@ -19,7 +21,8 @@ def total_sales(data: List[Dict[str, Any]]) -> float:
     using map + reduce
     """
     sales_values = map(lambda row: float(row["Sales"]), data)
-    return reduce(lambda a,b: a + b, sales_values, 0.0)
+    return reduce(lambda a, b: a + b, sales_values, 0.0)
+
 
 def sales_by_region(data: List[Dict]) -> Dict[str, float]:
     """
@@ -32,6 +35,7 @@ def sales_by_region(data: List[Dict]) -> Dict[str, float]:
         result[region] += sale
     return dict(result)
 
+
 def sales_by_category(data: List[Dict]) -> Dict[str, float]:
     """
     Group by Category and sum Sales.
@@ -42,7 +46,8 @@ def sales_by_category(data: List[Dict]) -> Dict[str, float]:
         sale = float(row["Sales"])
         result[cat] += sale
     return dict(result)
-    
+
+
 def top_selling_product(data: List[Dict]) -> str:
     """
     Product with highest total Quantity sold.
@@ -56,6 +61,7 @@ def top_selling_product(data: List[Dict]) -> str:
     # find max by quantity
     return max(qmap.items(), key=lambda x: x[1])[0]
 
+
 def profit_by_region(data: List[Dict]) -> Dict[str, float]:
     """
     Group by region and sum Profit.
@@ -66,7 +72,8 @@ def profit_by_region(data: List[Dict]) -> Dict[str, float]:
         profit = float(row["Profit"])
         result[region] += profit
     return dict(result)
-    
+
+
 def daily_sales(data: List[Dict[str, Any]]) -> Dict[str, float]:
     """
     Group total Sales by Order Date.
@@ -79,7 +86,7 @@ def daily_sales(data: List[Dict[str, Any]]) -> Dict[str, float]:
         result[day] += sale
     return dict(result)
 
-    
+
 def run_all_analysis(path: str):
     """
     Loads dataset and prints all analysis results.
